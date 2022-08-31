@@ -1,8 +1,8 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const PORT = 3001;
-const notes = require("./db/notes");
+const PORT = 80;
+const notes = require("./db/db.json");
 const fs = require('fs');
 
 app.use(express.urlencoded({ extended: true }));
@@ -19,14 +19,16 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
-  return res.json(notes);
+ res.json(notes);
 });
 
 app.post('/api/notes', (req, res) => {
-    const newNote = req.body;
-    newNote.id = Math.floor(Math.random()*999999999)
+
+    req.body.id = Math.floor(Math.random()*999999)
+    let newNote = req.body;
   notes.push(newNote)
-  fs.writeFileSync('./db/db.json', JSON.stringify(newNote))
+  fs.writeFileSync('./db/db.json', JSON.stringify(notes))
+  res.json(notes)
   })
 
 app.listen(PORT, () => {
