@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const PORT = 3001;
-const notes = require("./db/notes")
+const notes = require("./db/notes");
+const fs = require('fs');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -27,7 +28,7 @@ app.post('/api/notes', (req, res) => {
   notes.push(newNote)
   fs.writeFileSync('./db/db.json', JSON.stringify(newNote))
   })
-  
+
 app.listen(PORT, () => {
   console.log(`App listening on PORT ${PORT}`);
 });
