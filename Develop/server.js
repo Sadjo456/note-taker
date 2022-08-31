@@ -1,46 +1,33 @@
-// Dependencies
-// =============================================================
 const express = require('express');
 const path = require('path');
-
 const app = express();
 const PORT = 3001;
-app.use(express.static('public'));
+const notes = require("./db/notes")
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 
-app.get('/add', (req, res) => {
-  res.sendFile(path.join(__dirname, 'add.html'));
+app.get('/notes', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/notes.html'));
 });
 
-app.get('/api/characters', (req, res) => {
-  return res.json(characters);
+app.get('/api/notes', (req, res) => {
+  return res.json(notes);
 });
 
-app.get('/api/characters/:character', (req, res) => {
-  const chosen = req.params.character;
-
-  console.log(chosen);
-
-  for (let i = 0; i < characters.length; i++) {
-    if (chosen === characters[i].routeName) {
-      return res.json(characters[i]);
-    }
-  }
-
-  return res.json(false);
-});
-
-app.post('/api/characters', (req, res) => {
-  const newCharacter = req.body;
-
+app.post('/api/notes', (req, res) => {
+    const newNote = req.body;
+    newNote.id = Math.floor(Math.random()*999999999)
+  notes.push(newNote)
+  fs.writeFileSync('./db/db.json', JSON.stringify(newNote))
   })
+  
 app.listen(PORT, () => {
   console.log(`App listening on PORT ${PORT}`);
 });
